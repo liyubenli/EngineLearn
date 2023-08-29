@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>H:\mine\Project\Engine\glfw\glfw-3.3.8.bin.WIN64\include;H:\mine\Project\Engine\glad\glad\include;$(IncludePath)</IncludePath>
+    <IncludePath>H:\mine\Project\EngineLearn\EngineLearn\Project\glfw\glfw-3.3.8.bin.WIN64\include;H:\mine\Project\EngineLearn\EngineLearn\Project\glad\glad\include;$(IncludePath)</IncludePath>
     <LibraryPath>H:\mine\Project\Engine\glfw\glfw-3.3.8.bin.WIN64\lib-vc2022;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -113,7 +113,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>H:\mine\Project\Engine\glfw\glfw-3.3.8.bin.WIN64\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>H:\mine\Project\EngineLearn\EngineLearn\Project\glfw\glfw-3.3.8.bin.WIN64\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -136,6 +136,10 @@
   <ItemGroup>
     <ClCompile Include="..\glad\glad\src\glad.c" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Triangle.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Triangle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
