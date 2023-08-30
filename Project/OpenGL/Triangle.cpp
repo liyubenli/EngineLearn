@@ -8,36 +8,42 @@ GLADµÄÍ·ÎÄ¼ş°üº¬ÁËÕıÈ·µÄOpenGLÍ·ÎÄ¼ş£¨ÀıÈçGL/gl.h£©£¬ËùÒÔĞèÒªÔÚÆäËüÒÀÀµÓÚOpenGLµ
 #include <iostream>
 using namespace std;
 
-//Èı½ÇĞÎ¶¥µã
 float vertices[] =
 {
-    0.5f, 0.5f, 0.0f,   // ÓÒÉÏ½Ç
-    0.5f, -0.5f, 0.0f,  // ÓÒÏÂ½Ç
-    -0.5f, -0.5f, 0.0f, // ×óÏÂ½Ç
-    -0.5f, 0.5f, 0.0f   // ×óÉÏ½Ç
+    0.0f, 0.0f, 0.0f,
+    0.0f, 1.0f, 0.0f,
+    0.5f, 0.5f, 0.0f,
+    1.0f, 0.0f, 0.0f,
+    0.5f, -0.5f, 0.0f,
+    0.0f, -1.0f, 0.0f,
+    -0.5f, -0.5f, 0.0f,
+    -1.0f, 0.0f, 0.0f,
+    -0.5f, 0.5f, 0.0f
 };
-unsigned int indices[] = {
-    // ×¢ÒâË÷Òı´Ó0¿ªÊ¼! 
-    // ´ËÀıµÄË÷Òı(0,1,2,3)¾ÍÊÇ¶¥µãÊı×éverticesµÄÏÂ±ê£¬
-    // ÕâÑù¿ÉÒÔÓÉÏÂ±ê´ú±í¶¥µã×éºÏ³É¾ØĞÎ
-
-    0, 1, 3, // µÚÒ»¸öÈı½ÇĞÎ
-    1, 2, 3  // µÚ¶ş¸öÈı½ÇĞÎ
+unsigned int indices[] = 
+{
+    0, 1, 2,
+    0, 3, 4,
+    0, 5, 6,
+    0, 7, 8
 };
 //ÁÙÊ±¶¥µã×ÅÉ«Æ÷
 const char* m_vertexShaderSource = "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
+"out vec3 FragPos;\n"
 "void main()\n"
 "{\n"
 "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+"   FragPos = aPos;\n"
 "}\0";
 
 //ÁÙÊ±Æ¬¶Î×ÅÉ«Æ÷
 const char* m_fragmentShaderSource = "#version 330 core\n"
+"in vec3 FragPos;"
 "out vec4 FragColor;\n"
 "void main()\n"
 "{\n"
-"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f) * sqrt(FragPos.x*FragPos.x + FragPos.y*FragPos.y);\n"
 "}\0";
 
 //³ß´ç±ä»¯»Øµ÷
@@ -125,14 +131,14 @@ int Triangle()
 
 #pragma region äÖÈ¾»æÖÆ
 
-    unsigned int VAO;
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
-
     //¶¥µã»º³å¶ÔÏó(Vertex Buffer Objects)
     unsigned int VBO;
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    unsigned int VAO;
+    glGenVertexArrays(1, &VAO);
+    glBindVertexArray(VAO);
 
     unsigned int EBO;
     glGenBuffers(1, &EBO);
@@ -158,7 +164,7 @@ int Triangle()
     ÏÂ¸ö²ÎÊı¶¨ÒåÎÒÃÇÊÇ·ñÏ£ÍûÊı¾İ±»±ê×¼»¯(Normalize)¡£Èç¹ûÎÒÃÇÉèÖÃÎªGL_TRUE£¬ËùÓĞÊı¾İ¶¼»á±»Ó³Éäµ½0£¨¶ÔÓÚÓĞ·ûºÅĞÍsignedÊı¾İÊÇ-1£©µ½1Ö®¼ä¡£ÎÒÃÇ°ÑËüÉèÖÃÎªGL_FALSE¡£
     µÚÎå¸ö²ÎÊı½Ğ×ö²½³¤(Stride)£¬Õâ¸ö²ÎÊıµÄÒâË¼¼òµ¥Ëµ¾ÍÊÇ´ÓÕâ¸öÊôĞÔµÚ¶ş´Î³öÏÖµÄµØ·½µ½Õû¸öÊı×é0Î»ÖÃÖ®¼äÓĞ¶àÉÙ×Ö½Ú¡£
     ×îºóÒ»¸ö²ÎÊıµÄÀàĞÍÊÇvoid*£¬ËùÒÔĞèÒªÎÒÃÇ½øĞĞÕâ¸öÆæ¹ÖµÄÇ¿ÖÆÀàĞÍ×ª»»¡£Ëü±íÊ¾Î»ÖÃÊı¾İÔÚ»º³åÖĞÆğÊ¼Î»ÖÃµÄÆ«ÒÆÁ¿(Offset)¡£ÓÉÓÚÎ»ÖÃÊı¾İÔÚÊı×éµÄ¿ªÍ·£¬ËùÒÔÕâÀïÊÇ0¡£*/
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     //¶¥µã×ÅÉ«Æ÷
@@ -185,16 +191,18 @@ int Triangle()
         //ÊäÈë
         processInput(window);
 
-        //»æÖÆÎïÌå
+        //Çå³ıÑÕÉ«»º³å
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        //¼¤»î×ÅÉ«Æ÷
         glUseProgram(shaderProgram);
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        //½øĞĞ»æÖÆ
+        glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, 0);
 
-        //ÇåÆÁ
-        /*glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);*/
-
+        //½»»»»º³å
         glfwSwapBuffers(window);
+        //²éÑ¯IOÊÂ¼ş
         glfwPollEvents();
     }
 
