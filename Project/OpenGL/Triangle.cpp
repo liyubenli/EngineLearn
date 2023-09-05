@@ -1,49 +1,47 @@
 #include "triangle.h"
 
-/*请确认是在包含GLFW的头文件之前包含了GLAD的头文件。
-GLAD的头文件包含了正确的OpenGL头文件（例如GL/gl.h），所以需要在其它依赖于OpenGL的头文件之前包含GLAD。*/
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
-#include <iostream>
 using namespace std;
 
 float vertices[] =
 {
-    0.0f, 0.0f, 0.0f,
-    0.0f, 1.0f, 0.0f,
-    0.5f, 0.5f, 0.0f,
-    1.0f, 0.0f, 0.0f,
-    0.5f, -0.5f, 0.0f,
-    0.0f, -1.0f, 0.0f,
-    -0.5f, -0.5f, 0.0f,
-    -1.0f, 0.0f, 0.0f,
-    -0.5f, 0.5f, 0.0f
+    0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+    0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+    0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f,
+    1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+    0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f,
+    0.0f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+    -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f,
+    -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+    -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f
 };
 unsigned int indices[] = 
 {
-    0, 1, 2,
-    0, 3, 4,
-    0, 5, 6,
-    0, 7, 8
+    0, 2, 4,
+    0, 6, 8,
+    0, 10, 12,
+    0, 14, 16
 };
 //临时顶点着色器
 const char* m_vertexShaderSource = "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
-"out vec3 FragPos;\n"
+"layout (location = 1) in vec3 aColor;\n"
+"out vec3 outPos;\n"
+"out vec3 outColor;\n"
 "void main()\n"
 "{\n"
 "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-"   FragPos = aPos;\n"
+"   outPos = aPos;\n"
+"   outColor = aColor;\n"
 "}\0";
 
 //临时片段着色器
 const char* m_fragmentShaderSource = "#version 330 core\n"
-"in vec3 FragPos;"
+"in vec3 outPos;"
+"in vec3 outColor;"
 "out vec4 FragColor;\n"
 "void main()\n"
 "{\n"
-"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f) * sqrt(FragPos.x*FragPos.x + FragPos.y*FragPos.y);\n"
+"   FragColor = vec4(outColor * sqrt(outPos.x*outPos.x + outPos.y*outPos.y),1.0);\n"
 "}\0";
 
 //尺寸变化回调
@@ -166,6 +164,8 @@ int Triangle()
     最后一个参数的类型是void*，所以需要我们进行这个奇怪的强制类型转换。它表示位置数据在缓冲中起始位置的偏移量(Offset)。由于位置数据在数组的开头，所以这里是0。*/
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3*sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     //顶点着色器
     unsigned int vertexShader;
